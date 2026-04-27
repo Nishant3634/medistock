@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediStock Pro — Pharmacy Management System</title>
+  <meta name="description" content="MediStock Pro is a powerful pharmacy inventory and billing management system with real-time cloud sync." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+
+  <!-- AUTH SCREEN -->
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-bg">
+      <div class="auth-blob blob-1"></div>
+      <div class="auth-blob blob-2"></div>
+      <div class="auth-blob blob-3"></div>
+    </div>
+    <div class="auth-container">
+      <div class="auth-logo">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <rect width="40" height="40" rx="12" fill="url(#grad)"/>
+          <path d="M20 8v24M8 20h24" stroke="white" stroke-width="4" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="grad" x1="0" y1="0" x2="40" y2="40">
+              <stop stop-color="#6366f1"/>
+              <stop offset="1" stop-color="#0ea5e9"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>MediStock Pro</span>
+      </div>
+
+      <!-- Login Form -->
+      <div id="login-form" class="auth-card">
+        <h1>Welcome back</h1>
+        <p class="auth-subtitle">Sign in to your pharmacy dashboard</p>
+        <div class="form-group">
+          <label>Email address</label>
+          <input type="email" id="login-email" placeholder="you@pharmacy.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" />
+        </div>
+        <div id="login-error" class="auth-error"></div>
+        <button id="login-btn" class="btn-primary btn-full" onclick="handleLogin()">
+          <span>Sign In</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <p class="auth-switch">Don't have an account? <a onclick="toggleAuth('register')">Create one</a></p>
+      </div>
+
+      <!-- Register Form -->
+      <div id="register-form" class="auth-card hidden">
+        <h1>Create account</h1>
+        <p class="auth-subtitle">Get your pharmacy on the cloud</p>
+        <div class="form-group">
+          <label>Pharmacy / Your Name</label>
+          <input type="text" id="reg-name" placeholder="City Pharmacy" />
+        </div>
+        <div class="form-group">
+          <label>Email address</label>
+          <input type="email" id="reg-email" placeholder="you@pharmacy.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="reg-password" placeholder="At least 6 characters" />
+        </div>
+        <div id="register-error" class="auth-error"></div>
+        <button id="register-btn" class="btn-primary btn-full" onclick="handleRegister()">
+          <span>Create Account</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <p class="auth-switch">Already have an account? <a onclick="toggleAuth('login')">Sign in</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP SHELL -->
+  <div id="app-shell" class="app-shell hidden">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+            <rect width="40" height="40" rx="10" fill="url(#grad2)"/>
+            <path d="M20 8v24M8 20h24" stroke="white" stroke-width="4" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="grad2" x1="0" y1="0" x2="40" y2="40">
+                <stop stop-color="#6366f1"/>
+                <stop offset="1" stop-color="#0ea5e9"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <span class="sidebar-title">MediStock</span>
+        </div>
+        <button class="sidebar-toggle" onclick="toggleSidebar()" id="sidebar-toggle-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" id="nav-dashboard" onclick="showSection('dashboard')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" id="nav-inventory" onclick="showSection('inventory')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+          <span>Inventory</span>
+        </button>
+        <button class="nav-item" id="nav-billing" onclick="showSection('billing')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+          <span>Billing</span>
+        </button>
+        <button class="nav-item" id="nav-reports" onclick="showSection('reports')">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Reports</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info" id="user-info-box">
+          <div class="user-avatar" id="user-avatar">U</div>
+          <div class="user-details">
+            <span id="user-display-name">User</span>
+            <small id="user-display-email">user@email.com</small>
+          </div>
+        </div>
+        <button class="btn-logout" onclick="handleLogout()" title="Sign out">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <h2 id="page-title">Dashboard</h2>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-date" id="topbar-date"></div>
+          <div class="notification-badge" id="expiry-badge" title="Medicines expiring soon" style="display:none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            <span id="expiry-count">0</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- DASHBOARD SECTION -->
+      <section id="section-dashboard" class="section active">
+        <div class="stats-grid">
+          <div class="stat-card stat-blue">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Total Medicines</span>
+              <span class="stat-value" id="stat-total">0</span>
+            </div>
+          </div>
+          <div class="stat-card stat-orange">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Low Stock Items</span>
+              <span class="stat-value" id="stat-low">0</span>
+            </div>
+          </div>
+          <div class="stat-card stat-red">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Expiring Soon</span>
+              <span class="stat-value" id="stat-expiry">0</span>
+            </div>
+          </div>
+          <div class="stat-card stat-green">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Today's Revenue</span>
+              <span class="stat-value">₹<span id="stat-sales">0</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card">
+            <div class="card-header">
+              <h3>Low Stock Alerts</h3>
+              <span class="badge badge-orange" id="low-stock-count">0 items</span>
+            </div>
+            <div id="low-stock-list" class="alert-list">
+              <div class="empty-state-small">All stock levels healthy ✓</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Expiry Alerts</h3>
+              <span class="badge badge-red" id="expiry-alert-count">0 items</span>
+            </div>
+            <div id="expiry-alert-list" class="alert-list">
+              <div class="empty-state-small">No medicines expiring soon ✓</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <div class="card-header">
+            <h3>Recent Sales</h3>
+          </div>
+          <div id="recent-sales-list" class="alert-list">
+            <div class="empty-state-small">No sales recorded today</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- INVENTORY SECTION -->
+      <section id="section-inventory" class="section">
+        <div class="card">
+          <div class="card-header">
+            <h3>Add New Medicine</h3>
+          </div>
+          <div class="form-grid-4">
+            <div class="form-group">
+              <label>Medicine Name</label>
+              <input type="text" id="med-name" placeholder="e.g. Paracetamol 500mg" />
+            </div>
+            <div class="form-group">
+              <label>Category</label>
+              <select id="med-category">
+                <option value="">Select Category</option>
+                <option>Analgesic</option>
+                <option>Antibiotic</option>
+                <option>Antacid</option>
+                <option>Antifungal</option>
+                <option>Antihistamine</option>
+                <option>Antiviral</option>
+                <option>Supplement</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Quantity</label>
+              <input type="number" id="med-qty" placeholder="e.g. 100" min="0" />
+            </div>
+            <div class="form-group">
+              <label>Price per unit (₹)</label>
+              <input type="number" id="med-price" placeholder="e.g. 25.00" min="0" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label>Batch Number</label>
+              <input type="text" id="med-batch" placeholder="e.g. BN-2024-001" />
+            </div>
+            <div class="form-group">
+              <label>Supplier</label>
+              <input type="text" id="med-supplier" placeholder="e.g. ABC Pharma" />
+            </div>
+            <div class="form-group">
+              <label>Expiry Date</label>
+              <input type="date" id="med-expiry" />
+            </div>
+            <div class="form-group">
+              <label>Low Stock Threshold</label>
+              <input type="number" id="med-threshold" placeholder="e.g. 10" min="1" value="10" />
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; margin-top:16px;">
+            <button class="btn-primary" id="add-med-btn" onclick="addMedicine()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add to Stock
+            </button>
+            <button class="btn-ghost" onclick="clearInventoryForm()">Clear</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Medicine Inventory</h3>
+            <div class="card-actions">
+              <input type="text" id="search-input" placeholder="Search medicines..." class="search-input" oninput="filterInventory()" />
+              <select id="filter-category" class="filter-select" onchange="filterInventory()">
+                <option value="">All Categories</option>
+                <option>Analgesic</option>
+                <option>Antibiotic</option>
+                <option>Antacid</option>
+                <option>Antifungal</option>
+                <option>Antihistamine</option>
+                <option>Antiviral</option>
+                <option>Supplement</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table id="inventory-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Stock</th>
+                  <th>Price</th>
+                  <th>Batch</th>
+                  <th>Supplier</th>
+                  <th>Expiry</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-tbody">
+                <tr><td colspan="9" class="empty-cell">No medicines added yet</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- BILLING SECTION -->
+      <section id="section-billing" class="section">
+        <div class="billing-layout">
+          <div class="billing-left">
+            <div class="card">
+              <div class="card-header"><h3>Add Items to Bill</h3></div>
+              <div class="form-group">
+                <label>Select Medicine</label>
+                <select id="bill-med-select">
+                  <option value="">Choose a medicine...</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Quantity</label>
+                <input type="number" id="bill-qty" placeholder="Enter quantity" min="1" />
+              </div>
+              <div class="bill-med-info" id="bill-med-info"></div>
+              <button class="btn-primary" style="width:100%;margin-top:12px;" onclick="addToBill()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add to Bill
+              </button>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><h3>Customer Info</h3></div>
+              <div class="form-group">
+                <label>Customer Name</label>
+                <input type="text" id="customer-name" placeholder="Patient name (optional)" />
+              </div>
+              <div class="form-group">
+                <label>Doctor's Prescription</label>
+                <input type="text" id="customer-prescription" placeholder="Prescription no. (optional)" />
+              </div>
+            </div>
+          </div>
+
+          <div class="billing-right">
+            <div class="card invoice-card">
+              <div class="invoice-header">
+                <div>
+                  <h3>Invoice</h3>
+                  <span class="invoice-id" id="invoice-id">#INV-0000</span>
+                </div>
+                <span class="invoice-date" id="invoice-date"></span>
+              </div>
+              <div class="table-wrapper">
+                <table id="bill-table">
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Qty</th>
+                      <th>Rate</th>
+                      <th>Subtotal</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="bill-tbody">
+                    <tr><td colspan="5" class="empty-cell">No items added</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="invoice-totals">
+                <div class="total-row"><span>Subtotal</span><span>₹<span id="bill-subtotal">0.00</span></span></div>
+                <div class="total-row"><span>Tax (0%)</span><span>₹0.00</span></div>
+                <div class="total-row total-final"><span>Total</span><span>₹<span id="bill-total">0.00</span></span></div>
+              </div>
+              <div style="display:flex; gap:10px; margin-top:16px;">
+                <button class="btn-success" style="flex:1;" id="checkout-btn" onclick="checkout()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  Complete & Checkout
+                </button>
+                <button class="btn-ghost" onclick="clearBill()">Clear Bill</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- REPORTS SECTION -->
+      <section id="section-reports" class="section">
+        <div class="stats-grid" style="margin-bottom:24px;">
+          <div class="stat-card stat-blue">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Total Transactions</span>
+              <span class="stat-value" id="report-tx-count">0</span>
+            </div>
+          </div>
+          <div class="stat-card stat-green">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Total Revenue</span>
+              <span class="stat-value">₹<span id="report-total-revenue">0</span></span>
+            </div>
+          </div>
+          <div class="stat-card stat-purple">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Medicines Sold</span>
+              <span class="stat-value" id="report-items-sold">0</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Sales History</h3>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Invoice</th>
+                  <th>Customer</th>
+                  <th>Items</th>
+                  <th>Total</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="sales-history-tbody">
+                <tr><td colspan="5" class="empty-cell">No sales yet</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="edit-modal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Medicine</h3>
+        <button class="modal-close" onclick="closeEditModal()">✕</button>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label>Medicine Name</label>
+          <input type="text" id="edit-name" />
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="edit-category">
+            <option>Analgesic</option><option>Antibiotic</option><option>Antacid</option>
+            <option>Antifungal</option><option>Antihistamine</option><option>Antiviral</option>
+            <option>Supplement</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Quantity</label>
+          <input type="number" id="edit-qty" min="0" />
+        </div>
+        <div class="form-group">
+          <label>Price (₹)</label>
+          <input type="number" id="edit-price" min="0" step="0.01" />
+        </div>
+        <div class="form-group">
+          <label>Batch Number</label>
+          <input type="text" id="edit-batch" />
+        </div>
+        <div class="form-group">
+          <label>Supplier</label>
+          <input type="text" id="edit-supplier" />
+        </div>
+        <div class="form-group">
+          <label>Expiry Date</label>
+          <input type="date" id="edit-expiry" />
+        </div>
+        <div class="form-group">
+          <label>Low Stock Threshold</label>
+          <input type="number" id="edit-threshold" min="1" />
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button class="btn-primary" style="flex:1;" onclick="saveEdit()">Save Changes</button>
+        <button class="btn-ghost" onclick="closeEditModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
